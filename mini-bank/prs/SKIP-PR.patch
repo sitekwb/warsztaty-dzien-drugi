@@ -1,0 +1,42 @@
+From 330bc0abfe405c7ec7625f4e4239b5a2d85f6197 Mon Sep 17 00:00:00 2001
+From: Wojciech Sitek <sitekwb@gmail.com>
+Date: Wed, 20 May 2026 11:06:27 +0200
+Subject: [PATCH] tmp: SKIP-PR planted file
+
+---
+ mini-bank/tests/test_reporting_skip.py | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+ create mode 100644 mini-bank/tests/test_reporting_skip.py
+
+diff --git a/mini-bank/tests/test_reporting_skip.py b/mini-bank/tests/test_reporting_skip.py
+new file mode 100644
+index 0000000..0ab265c
+--- /dev/null
++++ b/mini-bank/tests/test_reporting_skip.py
+@@ -0,0 +1,23 @@
++"""Demonstration of the 'premature done / skipped tests' failure mode.
++
++The agent reported the work done and CI green -- but the one test that would
++have exercised the new behaviour is skipped. A skipped test is not a passing
++test. Block 4 Exercise 2 discusses this patch.
++"""
++
++import pytest
++
++
++@pytest.mark.skip("temporary")
++def test_monthly_report_totals_match_ledger():
++    # This is the assertion that would actually prove the feature works.
++    # It is skipped, so 'green CI' proves nothing about this behaviour.
++    assert _monthly_report_total() == _ledger_total()
++
++
++def _monthly_report_total() -> int:
++    raise NotImplementedError("report total not wired up yet")
++
++
++def _ledger_total() -> int:
++    raise NotImplementedError("ledger total not wired up yet")
+-- 
+2.39.5 (Apple Git-154)
+

@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1042,
+    "key": "OPS-1042",
+    "summary": "Klient nie może zalogować się do aplikacji mobilnej",
+    "description": "Zgłoszenie telefoniczne. Klientka Anna Kowalska (PESEL 84032212345, tel. 600-123-456, e-mail anna.kowalska@gmail.com) nie loguje się od wczoraj. Rachunek PL27114020040000300201355387. Prosi o pilny kontakt.",
+    "project": "OPS",
+    "type": "Bug",
+    "priority": "High",
+    "status": "In Progress",
+    "category": "Mobile App",
+    "assignee": "Jan Nowak",
+    "reporter": "Helpdesk L1",
+    "createdAt": "2026-05-28T09:14:00Z",
+    "updatedAt": "2026-05-29T11:02:00Z",
+    "comments": [
+      {
+        "author": "Jan Nowak",
+        "body": "Zweryfikowałem dane karty 4012 8888 8888 1881 (exp 09/27). Reset hasła wysłany na anna.kowalska@gmail.com.",
+        "createdAt": "2026-05-29T10:55:00Z"
+      }
+    ]
+  },
+  {
+    "id": 1043,
+    "key": "OPS-1043",
+    "summary": "Prośba o zmianę limitu przelewów",
+    "description": "Piotr Wiśniewski prosi o podniesienie limitu dziennego do 50 000 PLN na koncie PL61109010140000071219812874. Weryfikacja tożsamości w oddziale.",
+    "project": "OPS",
+    "type": "Task",
+    "priority": "Medium",
+    "status": "Open",
+    "category": "Accounts",
+    "assignee": null,
+    "reporter": "Oddział Centrum",
+    "createdAt": "2026-05-30T08:00:00Z",
+    "updatedAt": "2026-05-30T08:00:00Z",
+    "comments": []
+  },
+  {
+    "id": 1044,
+    "key": "RISK-204",
+    "summary": "Podejrzana transakcja do oznaczenia",
+    "description": "Transakcja 12 400 PLN, odbiorca w DE. Sprawdzić scoring. Brak kraju merchanta w feedzie (pole puste).",
+    "project": "RISK",
+    "type": "Investigation",
+    "priority": "High",
+    "status": "In Review",
+    "category": "Fraud",
+    "assignee": "Katarzyna Wójcik",
+    "reporter": "Monitoring",
+    "createdAt": "2026-05-31T13:20:00Z",
+    "updatedAt": "2026-06-01T07:45:00Z",
+    "comments": [
+      {
+        "author": "Katarzyna Wójcik",
+        "body": "Eskaluję do zespołu AML.",
+        "createdAt": "2026-06-01T07:45:00Z"
+      }
+    ]
+  }
+]

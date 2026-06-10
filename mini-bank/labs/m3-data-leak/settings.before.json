@@ -1,0 +1,11 @@
+{
+  "_comment": "M3-Lab profil DEMO — szeroki, bez hooków. Symuluje swiezo sklonowany repo dev managera, ktory jeszcze nie przeczytal SECURITY.md. Demonstrujemy ze defaultowy claude-code z taka konfiguracja wycieknie PESEL z mini-banku.",
+  "permissions": {
+    "allow": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash"
+    ]
+  }
+}

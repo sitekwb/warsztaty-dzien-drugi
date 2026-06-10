@@ -1,0 +1,89 @@
+From 94b27ee16f10e4d792cf5386b683c31e4d10eae3 Mon Sep 17 00:00:00 2001
+From: Wojciech Sitek <sitekwb@gmail.com>
+Date: Wed, 20 May 2026 11:06:00 +0200
+Subject: [PATCH] tmp: BAD-PR planted files
+
+---
+ mini-bank/src/minibank/reporting.py | 36 +++++++++++++++++++++++++++++
+ mini-bank/tests/test_reporting.py   | 26 +++++++++++++++++++++
+ 2 files changed, 62 insertions(+)
+ create mode 100644 mini-bank/src/minibank/reporting.py
+ create mode 100644 mini-bank/tests/test_reporting.py
+
+diff --git a/mini-bank/src/minibank/reporting.py b/mini-bank/src/minibank/reporting.py
+new file mode 100644
+index 0000000..35d7c59
+--- /dev/null
++++ b/mini-bank/src/minibank/reporting.py
+@@ -0,0 +1,36 @@
++"""Monthly account reporting.
++
++Produces per-account summary figures for the operations dashboard.
++Authored by an agent; under review in Block 4 Exercise 1.
++"""
++
++import logging
++from decimal import Decimal
++
++from minibank.accounts import Account
++
++logger = logging.getLogger("minibank.reporting")
++
++
++def total_balance(accounts: list[Account]) -> float:
++    """Sum the balances of the given accounts.
++
++    Returns the running total as a float for the dashboard widget.
++    """
++    total = 0.0
++    for account in accounts:
++        # PLANTED ISSUE (BAD-PR): silent Decimal -> float cast in money math.
++        # Drops exactness; rounding error accumulates over many accounts.
++        logger.debug("reporting balance for iban=%s", account.holder_iban)
++        # PLANTED ISSUE (BAD-PR): DEBUG log line prints customer.iban (PII).
++        total += float(account.balance)
++    return total
++
++
++def account_summary(account: Account) -> dict[str, object]:
++    """Build a one-line summary record for a single account."""
++    return {
++        "id": account.id,
++        "status": account.status,
++        "balance": float(account.balance),
++    }
+diff --git a/mini-bank/tests/test_reporting.py b/mini-bank/tests/test_reporting.py
+new file mode 100644
+index 0000000..8918d2a
+--- /dev/null
++++ b/mini-bank/tests/test_reporting.py
+@@ -0,0 +1,26 @@
++"""Tests for minibank.reporting.
++
++These pass on the BAD-PR as submitted -- which is exactly the point of the
++Block 4 review exercise: green tests do not prove the change is correct.
++"""
++
++from decimal import Decimal
++
++from minibank.accounts import Account
++from minibank.reporting import account_summary, total_balance
++
++
++def _account(acc_id: str, balance: str) -> Account:
++    return Account(id=acc_id, holder_iban="PL61109010140000071219812874", balance=Decimal(balance))
++
++
++def test_total_balance_sums_accounts():
++    accounts = [_account("ACC-1", "100.00"), _account("ACC-2", "50.00")]
++    assert total_balance(accounts) == 150.0
++
++
++def test_account_summary_has_expected_keys():
++    summary = account_summary(_account("ACC-1", "10.00"))
++    assert summary["id"] == "ACC-1"
++    assert summary["status"] == "open"
++    assert summary["balance"] == 10.0
+-- 
+2.39.5 (Apple Git-154)
+

@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: minibank
+      POSTGRES_PASSWORD: minibank
+      POSTGRES_DB: minibank
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U minibank"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Single-container app: FastAPI backend serves the built React SPA from /app/static.
+  # Matches the production Cloud Run image layout (one container per service).
+  app:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg://minibank:minibank@postgres:5432/minibank
+      JWT_SECRET: dev-only-jwt-secret-change-me
+      CORS_ORIGINS: '["http://localhost:8000"]'
+      ENVIRONMENT: dev
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata: {}

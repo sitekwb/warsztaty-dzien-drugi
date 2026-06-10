@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": ["Read", "Bash(pytest:*)", "Bash(ruff:*)"],
+    "ask": ["Edit", "Write", "Bash(git:*)"]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": "bash .claude/hooks/secrets-scan.sh" }
+        ]
+      }
+    ]
+  }
+}

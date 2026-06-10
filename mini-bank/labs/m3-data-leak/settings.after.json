@@ -1,0 +1,33 @@
+{
+  "_comment": "M3-Lab profil PROD-LIKE — waski allowlist, deny na sekrety/seed/migracje, dwa hooki PreToolUse (secrets-scan + forbid-prod-data). Po podmianie tego configa ten sam prompt z prompt.md nie powinien zapisac PESEL/IBAN do generowanego kodu.",
+  "permissions": {
+    "allow": [
+      "Read",
+      "Write(backend/src/**/*.py)",
+      "Edit(backend/src/**/*.py)",
+      "Bash(pytest:*)",
+      "Bash(ruff:*)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(**/secrets/**)",
+      "Write(**/.env*)",
+      "Write(**/seed.py)",
+      "Write(**/seed_helpers.py)",
+      "Write(**/alembic/versions/**)",
+      "Bash(curl:*)",
+      "Bash(wget:*)"
+    ],
+    "ask": [
+      "Bash(git:*)",
+      "Write"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": {
+      "Edit": "bash .claude/hooks/secrets-scan.sh && bash .claude/hooks/forbid-prod-data.sh",
+      "Write": "bash .claude/hooks/secrets-scan.sh && bash .claude/hooks/forbid-prod-data.sh"
+    }
+  }
+}

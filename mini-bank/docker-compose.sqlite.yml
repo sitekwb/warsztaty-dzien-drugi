@@ -1,0 +1,15 @@
+# Override: use SQLite instead of Postgres. Run with:
+#   docker compose -f docker-compose.yml -f docker-compose.sqlite.yml up
+services:
+  postgres:
+    profiles: ["disabled"]
+
+  backend:
+    environment:
+      DATABASE_URL: sqlite:////home/app/minibank.db
+    volumes:
+      - sqlitedata:/home/app
+    depends_on: !reset []
+
+volumes:
+  sqlitedata: {}
