@@ -131,15 +131,6 @@ two_paths_note() {
   note "B) Czysty git: kto nie chce dawać agentowi GitHuba — sam 'git push' (GH_TOKEN w ~/.bashrc), bez gh."
 }
 
-# wersja Pythona >= 3.12 ?
-py_ge_312() {
-  command -v python3 >/dev/null 2>&1 || return 1
-  python3 - <<'PY' >/dev/null 2>&1
-import sys
-sys.exit(0 if sys.version_info[:2] >= (3, 12) else 1)
-PY
-}
-
 # wersja Node >= 20 ?
 node_ge_20() {
   command -v node >/dev/null 2>&1 || return 1
@@ -153,7 +144,7 @@ echo
 
 if ! command -v apt-get >/dev/null 2>&1; then
   warn "To nie jest Ubuntu/Debian (brak apt-get)."
-  note "Zainstaluj ręcznie: git, curl, python3>=3.12 (+venv,+pip), Node 20, npm,"
+  note "Zainstaluj ręcznie: git, curl, python3 (+venv,+pip), Node 20, npm,"
   note "  oraz:  npm i -g @anthropic-ai/claude-code @fission-ai/openspec"
   exit 1
 fi
@@ -164,7 +155,7 @@ for tool in git curl; do
   if command -v "$tool" >/dev/null 2>&1; then ok "$tool"; else miss "$tool"; APT_PKGS+="$tool "; fi
 done
 # python3 + moduły venv/pip (sprawdzamy też moduł venv, nie samą binarkę)
-if py_ge_312; then
+if command -v python3 >/dev/null 2>&1; then
   # venv: testuj REALNE utworzenie venva z pip (jak build mini-banku: python3 -m venv
   # + venv/bin/pip). Sam 'import venv' przechodzi NAWET bez pakietu python3-venv —
   # a wtedy 'python3 -m venv' pada na braku ensurepip. Robimy venv w temp i sprzątamy.
@@ -185,16 +176,7 @@ if py_ge_312; then
     miss "python3-pip"; APT_PKGS+="python3-pip "
   fi
 else
-  if command -v python3 >/dev/null 2>&1; then
-    warn "✗ python3 jest, ale < 3.12 ($(python3 -V 2>&1 | awk '{print $2}')) — mini-bank wymaga >= 3.12"
-  else
-    miss "python3 (>= 3.12)"
-  fi
-  MISSING=1
-  add_todo "# Python >= 3.12 (deadsnakes):"
-  add_todo "${SUDO}apt-get update && ${SUDO}apt-get install -y software-properties-common"
-  add_todo "${SUDO}add-apt-repository -y ppa:deadsnakes/ppa && ${SUDO}apt-get update"
-  add_todo "${SUDO}apt-get install -y python3.12 python3.12-venv"
+  miss "python3"; APT_PKGS+="python3 python3-venv python3-pip "
 fi
 [[ -n "$APT_PKGS" ]] && add_todo "${SUDO}apt-get update && ${SUDO}apt-get install -y build-essential ${APT_PKGS}"
 
