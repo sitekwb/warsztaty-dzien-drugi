@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Demo 0 — przygotowanie środowiska na gołej Ubuntu VM (dostęp tylko przez SSH).
 # Sudo-instalacje tylko DRUKUJE do skopiowania OBOK (sam nie używa sudo). Gdy
-# narzędzia są gotowe, robi konfigurację jednorazową BEZ sudo: login Claude Code,
-# build+smoke mini-banku, gh CLI (token min.) i push mini-banku na prywatne repo.
+# narzędzia są gotowe, robi konfigurację jednorazową BEZ sudo: build+smoke
+# mini-banku, gh CLI (token min.) i push mini-banku na prywatne repo.
 # Użycie:
 #   bash demos/demo-00.sh           # wykryj braki / dokończ konfigurację
 #   bash demos/demo-00.sh --help
@@ -43,42 +43,6 @@ fi
 add_todo() { TODO+="$1"$'\n'; }
 ok()   { note "✓ $1"; }
 miss() { warn "✗ $1 — brak"; MISSING=1; }
-
-# Logowanie do Claude Code na maszynie headless (VM/kontener bez przeglądarki).
-# Kroki bez sudo wykonujemy OD RAZU (jak gh_setup); tylko 'claude setup-token' wymaga
-# przeglądarki → robi je uczestnik na laptopie i wkleja token przy ukrytym promptcie.
-claude_login() {
-  step "Logowanie do Claude Code (maszyna headless — bez przeglądarki)"
-  if [[ -n "${CLAUDE_CODE_OAUTH_TOKEN:-}" ]] && claude -p 'powiedz: ok' 2>/dev/null | grep -qi ok; then
-    note "✓ Claude Code już autoryzowany (token w środowisku działa)."
-    return 0
-  fi
-  say "Krok na laptopie Z PRZEGLĄDARKĄ — wygeneruj długożyciowy token (~1 rok):"
-  show "claude setup-token        # ukończ OAuth w przeglądarce, skopiuj wypisany token"
-  say "Wklej token tutaj (na VM) przy ukrytym promptcie — zostaje prywatny:"
-  local tok=""
-  read -rsp '  Wklej token Claude Code: ' tok </dev/tty; echo
-  if [[ -z "$tok" ]]; then
-    warn "Brak tokenu — pomijam logowanie (zrób później: bash demos/demo-00.sh)."
-    note "Alternatywa: export ANTHROPIC_API_KEY=sk-ant-...  (rozlicza credits API, nie subskrypcję)."
-    return 0
-  fi
-  export CLAUDE_CODE_OAUTH_TOKEN="$tok"
-  unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN   # mają WYŻSZY priorytet — przesłoniłyby token
-  printf '\nexport CLAUDE_CODE_OAUTH_TOKEN=%q\n' "$tok" >> ~/.bashrc
-  note "✓ token utrwalony w ~/.bashrc (kolejne sesje SSH); zdjęto ANTHROPIC_API_KEY/AUTH_TOKEN."
-  [ -f ~/.claude.json ] || echo '{}' > ~/.claude.json   # pomiń ekran powitalny TUI
-  python3 -c 'import json,os;p=os.path.expanduser("~/.claude.json");d=json.load(open(p));d["hasCompletedOnboarding"]=True;json.dump(d,open(p,"w"))' 2>/dev/null \
-    && note "✓ pominięto ekran powitalny TUI (hasCompletedOnboarding)."
-  say "Weryfikacja PRAWDY (decyduje wynik, nie wygląd TUI):  claude -p 'powiedz: ok'"
-  if claude -p 'powiedz: ok' 2>/dev/null | grep -qi ok; then
-    say "✓ Claude Code autoryzowany — token działa."
-  else
-    warn "Token nie autoryzował zapytania — sprawdź go i powtórz: bash demos/demo-00.sh"
-  fi
-  note "W BIEŻĄCEJ powłoce wczytaj token:  source ~/.bashrc  (lub nowa sesja SSH)."
-  note "Pierwsze wejście do mini-bank poprosi raz o zaufanie katalogu — potwierdź „yes\" (zapamiętane)."
-}
 
 # Konfiguracja gh CLI najmniejszym przywilejem (token zawężony do JEDNEGO repo).
 # Reużywalne w kolejnych demach (gh pr / issue / push). Część webowa = na laptopie.
@@ -268,8 +232,6 @@ if [[ "$MISSING" -eq 0 ]]; then
   MB="$(find_minibank)"
   build_and_smoke_minibank "$MB"
   echo
-  claude_login
-  echo
   gh_setup
   echo
   push_minibank "$MB"
@@ -287,6 +249,6 @@ step "Komendy do skopiowania i uruchomienia OBOK (ten skrypt ich nie wykona)"
 printf '%s\n' "$TODO" | sed '/^$/d' | paste_block
 echo
 say "1) Skopiuj i uruchom powyższe komendy (instalacje), potem:  bash demos/demo-00.sh"
-note "   Ponowne uruchomienie dokończy konfigurację: build+smoke mini-banku, logowanie do"
-note "   Claude Code (wklejasz token), gh + token, push na prywatne repo."
+note "   Ponowne uruchomienie dokończy konfigurację: build+smoke mini-banku,"
+note "   gh + token, push na prywatne repo."
 exit 1
