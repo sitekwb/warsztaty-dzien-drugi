@@ -38,16 +38,6 @@ require node    "curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash - 
 require npm     "sudo apt-get install -y nodejs"
 require curl    "sudo apt-get install -y curl"
 
-# Python >= 3.12 (mini-bank pyproject)
-if ! python3 - <<'PY' >/dev/null 2>&1
-import sys; sys.exit(0 if sys.version_info[:2] >= (3,12) else 1)
-PY
-then
-  warn "python3 < 3.12 ($(python3 -V 2>&1 | awk '{print $2}')) — mini-bank wymaga >= 3.12."
-  note "Zainstaluj Python 3.12:  bash demos/demo-00.sh"
-  exit 1
-fi
-
 HOST=127.0.0.1
 MB="$(find_minibank)"
 BE="$MB/backend"
@@ -62,7 +52,7 @@ AUTH="$BE/src/minibank/services/auth_service.py"
 # --check: tylko weryfikacja, bez stawiania serwera
 if [[ "$CHECK" == 1 ]]; then
   [[ -f "$AUTH" ]] || { warn "Nie znaleziono $AUTH"; exit 1; }
-  say "Demo 2 OK: python3>=3.12, node, npm, curl obecne; mini-bank w $MB."
+  say "Demo 2 OK: python3, node, npm, curl obecne; mini-bank w $MB."
   exit 0
 fi
 

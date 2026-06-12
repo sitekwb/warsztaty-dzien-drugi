@@ -77,7 +77,7 @@ mini-bank/
 
 ## Stack
 
-- **Backend**: Python 3.12 · FastAPI 0.115 · SQLAlchemy 2 · Alembic · Pydantic v2 · bcrypt · PyJWT · Faker[pl_PL]
+- **Backend**: Python 3 · FastAPI 0.115 · SQLAlchemy 2 · Alembic · Pydantic v2 · bcrypt · PyJWT · Faker[pl_PL]
 - **Frontend**: React 19 · Vite · TypeScript · Material-UI v6 · react-router v7 · axios
 - **Storage**: Postgres 16 (prod) / SQLite (dev override)
 - **Deploy** (v3+): Terraform → GCP Cloud Run + Cloud SQL + Secret Manager

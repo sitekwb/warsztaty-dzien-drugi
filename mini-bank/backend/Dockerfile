@@ -12,7 +12,7 @@ COPY frontend/src ./src
 RUN npm run build
 
 # ---- Stage 2: build Python wheels ----
-FROM python:3.12-slim AS py-builder
+FROM python:3-slim AS py-builder
 WORKDIR /app
 COPY backend/pyproject.toml ./
 COPY backend/src ./src
@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir --upgrade pip build && \
     pip wheel --no-cache-dir --wheel-dir=/wheels .
 
 # ---- Stage 3: runtime ----
-FROM python:3.12-slim
+FROM python:3-slim
 WORKDIR /app
 RUN useradd --create-home --shell /bin/bash app && \
     apt-get update && apt-get install -y --no-install-recommends curl && \

@@ -2,7 +2,6 @@
 name = "minibank"
 version = "0.2.0"
 description = "Interactive mBank workshop demo — FastAPI + SQLAlchemy + React"
-requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115",
     "pydantic>=2.9",
